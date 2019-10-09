@@ -23,11 +23,13 @@ Horarios de encendido...
 Duracion de   
 
 # Sensores/Entradas
-- DHT11 --> Sensor de Humedad y Temperatura
-- LDR --> Sensor de Luz
-- Pulsador
+- DHT11 --> Sensor de Humedad y Temperatura [I2C--> SCK=GPIOx, SDA= GPIOx]
+- LDR --> Sensor de Luz [entrada ADC, GPIOx del ESP]
+- Pulsador [GPIOx del ESP]
 
 # Actuadores
-- Lámpara de Led
-- Coolers (entrada/salida)
-- Led Test
+- Lámpara de Led [GPIOx]
+- Coolers (entrada/salida) [GPIOx]
+- Led Test [GPIOx]
+
+
