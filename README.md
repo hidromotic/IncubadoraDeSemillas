@@ -2,6 +2,8 @@
 Control Automático para Incubadora de Semillas (ITES 2019)  
 Deberá estar funcionando para la feria del 30 de Octubre del 2019  
 
+# REQUERIMIENTOS MÍNIMOS
+
 # Funcionalidad
 ### Led Test
 Se contará con un led que destellará cada 2 segundos. Se mantendrá encendido durante 50ms, para indicar que el sistema está funcionando de manera apropiada.  
