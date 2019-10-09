@@ -50,8 +50,13 @@ Los tópicos que utilizará serán:
 - /humedad  
 - /alarmas  
 El formato de los mensajes será....  
-El mensaje se enviará cuando... 
+El mensaje se enviará cuando...  
+El sistema se suscribirá a los tópicos para recibir comandos y ajustes desde la web:
+- suscripcion1
+- suscripcion2
+- ...
 Los datos de conexión al servidor son:  
+
 
 # Hardware
 Se alimentará desde un transformador de 12V.  
