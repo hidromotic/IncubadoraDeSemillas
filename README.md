@@ -33,3 +33,11 @@ Duracion de
 - Led Test [GPIOx]
 
 
+# Comunicación
+Se comunicará con un servidor con Mosquito, para publicar mensajes MQTT.  
+Los tópicos que utilizará serán:  
+- /temperatura  
+- /humedad  
+- /alarmas  
+El formato de los mensajes será....  
+El mensaje se enviará cuando... 
