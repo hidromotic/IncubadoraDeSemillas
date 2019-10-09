@@ -1,5 +1,6 @@
 # IncubadoraDeSemillas
 Control Automático para Incubadora de Semillas (ITES 2019)  
+Deberá estar funcionando para la feria del 30 de Octubre del 2019  
 
 # Funcionalidad
 ### Led Test
