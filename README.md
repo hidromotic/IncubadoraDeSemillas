@@ -8,8 +8,8 @@ Deberá estar funcionando para la feria del 30 de Octubre del 2019
 ### Led Test
 Se contará con un led que destellará cada 2 segundos. Se mantendrá encendido durante 50ms, para indicar que el sistema está funcionando de manera apropiada.  
 
-### Control de Humedad
-Si el control automático de.... está habilitado, activará o desactivará ...  
+### Control de Humedad / Temperatura
+Si el control automático de.... está habilitado, activará o desactivará los coolers en función del valor de ...
 Se podrá comandar manualmente la activación de los coolers  
 
 ### Control de Luz
