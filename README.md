@@ -10,9 +10,10 @@ Se contará con un led que destellará cada 2 segundos. Se mantendrá encendido 
 
 ### Control de Humedad
 Si el control automático de.... está habilitado, activará o desactivará ...  
+Se podrá comandar manualmente la activación de los coolers  
 
 ### Control de Luz
-Se podrá activar manualmente...  
+Se podrá comandar manualmente la activación de la lámpara
 
 
 # Visualización WEB
