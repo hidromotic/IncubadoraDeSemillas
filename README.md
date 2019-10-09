@@ -42,3 +42,10 @@ Los tópicos que utilizará serán:
 El formato de los mensajes será....  
 El mensaje se enviará cuando... 
 Los datos de conexión al servidor son:  
+
+# Hardware
+Se alimentará desde un transformador de 12V.  
+Se utilizará un módulo Step Down para bajar a 6V, que alimentará la lámpara de Ledy los Coolers.  
+El NodeMCU se alimentará desde ....
+
+Batería?? Voltaje??? Autonomía esperada?? Función de la batería???  
