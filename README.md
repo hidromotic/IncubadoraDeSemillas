@@ -2,8 +2,15 @@
 Control Automático para Incubadora de Semillas (ITES 2019)  
 
 # Funcionalidad
+### Led Test
+Se contará con un led que destellará cada 2 segundos. Se mantendrá encendido durante 50ms, para indicar que el sistema está funcionando de manera apropiada.  
+
+### Control de Humedad
 Si el control automático de.... está habilitado, activará o desactivará ...  
+
+### Control de Luz
 Se podrá activar manualmente...  
+
 
 # Visualización WEB
 Temperatura de... en tal unidad  
