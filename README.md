@@ -24,7 +24,8 @@ Instante del último encendido de....
 
 # Ajustes del sistema (por módulo)
 ## Control de Temperatura
-Especificación de valo-res de temperatura  
+Especificación de valores de temperatura  
+
 ## Control de Humedad
 Especificación de valores de humedad  
 Habilitar/Deshabilitar el control automático de...  
@@ -43,7 +44,6 @@ Duracion de
 - Coolers (entrada/salida) [GPIOx]
 - Led Test [GPIOx]
 
-
 # Comunicación
 Se comunicará con un servidor con Mosquito, para publicar mensajes MQTT.  
 Los tópicos que utilizará serán:  
@@ -58,10 +58,14 @@ El sistema se suscribirá a los tópicos para recibir comandos y ajustes desde l
 - ...
 Los datos de conexión al servidor son:  
 
-
 # Hardware
 Se alimentará desde un transformador de 12V.  
 Se utilizará un módulo Step Down para bajar a 6V, que alimentará la lámpara de Ledy los Coolers.  
 El NodeMCU se alimentará desde ....
 
 Batería?? Voltaje??? Autonomía esperada?? Función de la batería???  
+
+# Modo Desarrollo
+- Un toque de botón --> Publicar el valor de Temperatura+Humedad+LDR
+- Dos toques de botón --> Invertir el estado de la lámpara de Led
+- Tres toques de botón --> Invertir el estado de los Coolers
