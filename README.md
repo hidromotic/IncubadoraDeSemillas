@@ -50,7 +50,11 @@ Los tópicos que utilizará serán:
 - /temperatura  
 - /humedad  
 - /alarmas  
-El formato de los mensajes será....  
+El mensaje será en formato JSON clave/valor. Por ejemplo:
+{ "humedad": "ff.ff",
+  "temperatura": "ff.ff"
+  "luz": "d" }
+Donde 'f' se refiere a un numero de punto flotante y 'd' a un entero 
 El mensaje se enviará cuando...  
 El sistema se suscribirá a los tópicos para recibir comandos y ajustes desde la web:
 - suscripcion1
