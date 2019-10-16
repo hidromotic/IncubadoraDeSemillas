@@ -13,7 +13,10 @@ Si el control automático de.... está habilitado, activará o desactivará los 
 Se podrá comandar manualmente la activación de los coolers  
 
 ### Control de Luz
-Se podrá comandar manualmente la activación de la lámpara
+Para controlar el modo automático de la luz se usaran como referencia 2 constantes. 
+La primera la llamaremos L y será un valor medio, y la segunda la llamaremos M y será un valor de margen a considerar. 
+Si se habilita el control automático, la lampara debe encender cuando la luz ambiente se encuentre por debajo de (L - M) y se debe apagar cuando la luz ambiente esté por encima de (L + M)
+En todo caso se podrá comandar manualmente el encendido y apagado de la lámpara. 
 
 
 # Visualización WEB
