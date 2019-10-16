@@ -34,6 +34,7 @@
 #define PIN_COOLER_1 14 // GPIO14 = D5
 #define PIN_COOLER_2 12 // GPIO12 = D6
 #define PIN_TIRA_LED 4 // GPIO04 = D2
+#define CONFIGURAR_PIN_LED mgos_gpio_setup_output(PIN_TIRA_LED, 0)
 #define ACTIVAR_COOLER_1 mgos_gpio_write(PIN_COOLER_1, true)
 #define DESACTIVAR_COOLER1 mgos_gpio_write(PIN_COOLER_1, false)
 #define CONFIGURAR_COOLER1 mgos_gpio_setup_output(PIN_COOLER_1, 0)
@@ -47,6 +48,9 @@ mgos_timer_id tmpBomba=NULL;
 mgos_timer_id apagarBoton=NULL;
 mgos_timer_id timercb=NULL;
 bool secuencia_bomba_en_accion=false;
+int umbral_luz=600;
+int margen_luz=100;
+
 
 int tiempoEspera=5000;
 int tiempoPreaviso=1000;
@@ -67,6 +71,18 @@ static void cb_boton_liberado(int pin, void *arg);
 static void mostrar_pulsaciones(void *arg);
 static void led_test(void *arg);
 static void apagar_led(void *arg);
+static void control_luz(void *arg);
+
+static void control_luz(void *arg){
+  luz = mgos_adc_read(PIN_LDR);
+  if(luz<(umbral_luz-margen_luz)){
+    mgos_gpio_write(PIN_TIRA_LED, true);
+  }
+  if(luz>(umbral_luz+margen_luz)){
+    mgos_gpio_write(PIN_TIRA_LED, false);
+  }
+  (void) arg;
+}
 
 static void led_test(void *arg){
   ENCENDER_LED_TESTEO;
@@ -294,11 +310,14 @@ enum mgos_app_init_result mgos_app_init(void)
     mgos_gpio_setup_output(LED_PIN, 0);
 #endif
     CONFIGURAR_COOLER1;
+    CONFIGURAR_PIN_LED;
     DESACTIVAR_COOLER1;
     //mgos_set_timer(2000 /* ms */, MGOS_TIMER_REPEAT, encender_led, NULL);
     mgos_gpio_write(LED_PIN, true);
 
     mgos_set_timer(2000, MGOS_TIMER_REPEAT, led_test, NULL);
+
+    mgos_set_timer(500, MGOS_TIMER_REPEAT, control_luz, NULL);
 
     mgos_gpio_set_button_handler(PIN_BOTON, MGOS_GPIO_PULL_UP,
                                   MGOS_GPIO_INT_EDGE_NEG,
