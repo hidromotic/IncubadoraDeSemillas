@@ -35,6 +35,7 @@
 #define ACTIVAR_COOLER_1 mgos_gpio_write(PIN_COOLER_1, true)
 #define DESACTIVAR_COOLER1 mgos_gpio_write(PIN_COOLER_1, false)
 #define CONFIGURAR_COOLER1 mgos_gpio_setup_output(PIN_COOLER_1, 0)
+#define INVERTIR_LED mgos_gpio_toggle(LED_PIN)
 
 bool encendidoFijo=false;
 int tiempoLed = 500;
@@ -133,6 +134,17 @@ static void foo_handler(struct mg_connection *c, int ev, void *p,
 
 */
 //TODO: tiempo de espera en una variable, poner en otra el tiempo de preaviso.
+static void accion_ajustes(struct mg_connection *nc, const char *topic,
+                                                        int topic_len, const char *msg, int msg_len,
+                                                        void *ud){
+    char str[20];
+    id=0;
+    sprintf(str, "recibido");
+    LOG(LL_INFO, (str));
+    (void) ud;
+
+}
+
 
 static void cambio_tiempo_destello(void *arg){
   mgos_clear_timer(id);
@@ -165,10 +177,11 @@ static void inicio_bomba(void *arg)
     switch (contador) {
         case 1:   sprintf(str, "publicamos los valores sensados");
                   LOG(LL_INFO, (str));
-                  mgos_mqtt_pubf("Sensor", 1, false, "{advice: %Q, pulsaciones: %d}", mgos_sys_config_get_device_id(), contador);
+                  mgos_mqtt_pubf("Sensor", 1, false, "{advice: %Q, luz: %d, humedad: %f, temperatura: %f}", mgos_sys_config_get_device_id(), luz, hum, temp);
                   break;
         case 2:   sprintf(str, "Invertimos el valor del led");
                   LOG(LL_INFO, (str));
+                  INVERTIR_LED;
                   break;
         case 3:   sprintf(str, "Invertimos el valor del cooler");
                   LOG(LL_INFO, (str));
@@ -236,8 +249,8 @@ static void inicio_bomba(void *arg)
                                   NULL);
       if(BOTON_PRESIONADO)
       {
-        temp = mgos_dht_get_temp(dht);
-        hum = mgos_dht_get_humidity(dht);
+        temp = 2.5;//mgos_dht_get_temp(dht);
+        hum = 1.20;//mgos_dht_get_humidity(dht);
         luz = mgos_adc_read(PIN_LDR);
         char str[20];
         sprintf(str, "Temperatura: %2.2f", temp);
@@ -276,6 +289,8 @@ enum mgos_app_init_result mgos_app_init(void)
                                   MGOS_GPIO_INT_EDGE_NEG,
                                   100, cb_boton_pulsado,
                                   NULL);
+    mgos_mqtt_sub("ajustes", accion_ajustes, NULL);
+
 //    mgos_register_http_endpoint("/foo", foo_handler, NULL);
 //    mgos_register_http_endpoint("/test", test, NULL);
     dht=mgos_dht_create(PIN_DHT, DHT11);

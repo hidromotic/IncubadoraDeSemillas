@@ -33,8 +33,8 @@ config_schema:
   - ["wifi.sta.enable", "b", true, {title: "some boolean value"}]
 
 
-#  - ["mqtt.enable", "b", true, {title: "algo"}]
-#  - ["mqtt.server", "s", "mqtt.thingspeak.com", {title: "algo"}]
+  - ["mqtt.enable", "b", true, {title: "algo"}]
+  - ["mqtt.server", "s", "192.168.5.149", {title: "algo"}]
 #  - ["mqtt.pass", "s", "5IVIRC7C6HZ1RYVM", {title: "algo"}]
 #  - ["mqtt.user", "s", "HI4S7DS4JW1LEJJ2", {title: "maskdm"}]
 #  - ["mqtt.client_id", "s", "kk", {title: "iddelcoso"}]
