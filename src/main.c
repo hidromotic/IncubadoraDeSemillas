@@ -25,6 +25,8 @@
 
 #define PIN_BOTON 0
 #define LED_PIN 2
+#define ENCENDER_LED_TESTEO mgos_gpio_write(LED_PIN, false)
+#define APAGAR_LED_TESTEO mgos_gpio_write(LED_PIN, true)
 #define BOTON_PRESIONADO mgos_gpio_read(PIN_BOTON)==0
 #define PIN_DHT 5
 #define DESTELLO 50
@@ -63,10 +65,17 @@ struct mgos_dht *dht;
 static void cb_boton_pulsado(int pin, void *arg);
 static void cb_boton_liberado(int pin, void *arg);
 static void mostrar_pulsaciones(void *arg);
+static void led_test(void *arg);
+static void apagar_led(void *arg);
 
+static void led_test(void *arg){
+  ENCENDER_LED_TESTEO;
+  mgos_set_timer(50, 0, apagar_led, NULL);
+  (void) arg;
+}
 
 static void apagar_led(void *arg){
-  mgos_gpio_write(LED_PIN, true);
+  APAGAR_LED_TESTEO;
   (void) arg;
 }
 
@@ -137,11 +146,16 @@ static void foo_handler(struct mg_connection *c, int ev, void *p,
 static void accion_ajustes(struct mg_connection *nc, const char *topic,
                                                         int topic_len, const char *msg, int msg_len,
                                                         void *ud){
-    char str[20];
-    id=0;
-    sprintf(str, "recibido");
+    char str[50];
+
+    sprintf(str, "recibido de %.*s -->%.*s", topic_len, topic, msg_len, msg);
     LOG(LL_INFO, (str));
     (void) ud;
+    (void) nc;
+    (void) topic;
+    (void) topic_len;
+    (void) msg;
+    (void) msg_len;
 
 }
 
@@ -284,11 +298,14 @@ enum mgos_app_init_result mgos_app_init(void)
     //mgos_set_timer(2000 /* ms */, MGOS_TIMER_REPEAT, encender_led, NULL);
     mgos_gpio_write(LED_PIN, true);
 
+    mgos_set_timer(2000, MGOS_TIMER_REPEAT, led_test, NULL);
 
     mgos_gpio_set_button_handler(PIN_BOTON, MGOS_GPIO_PULL_UP,
                                   MGOS_GPIO_INT_EDGE_NEG,
                                   100, cb_boton_pulsado,
                                   NULL);
+
+
     mgos_mqtt_sub("ajustes", accion_ajustes, NULL);
 
 //    mgos_register_http_endpoint("/foo", foo_handler, NULL);
