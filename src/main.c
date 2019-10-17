@@ -50,6 +50,7 @@ mgos_timer_id timercb=NULL;
 bool secuencia_bomba_en_accion=false;
 int umbral_luz=600;
 int margen_luz=100;
+string frase = '"ctr_luz":false';
 
 
 int tiempoEspera=5000;
@@ -161,8 +162,20 @@ static void foo_handler(struct mg_connection *c, int ev, void *p,
 //TODO: tiempo de espera en una variable, poner en otra el tiempo de preaviso.
 static void accion_ajustes(struct mg_connection *nc, const char *topic,
                                                         int topic_len, const char *msg, int msg_len,
-                                                        void *ud){
+                                                        void *ud)
+    {
     char str[50];
+    struct objeto;
+    json_prettify(msg, msg_len, objeto);
+    if(objeto.ctr_luz==false){
+      sprintf(str, "apagar luz");
+      LOG(LL_INFO, (str));
+    } else {
+      sprintf(str, "encender luz");
+      LOG(LL_INFO, (str));
+    }
+
+
 
     sprintf(str, "recibido de %.*s -->%.*s", topic_len, topic, msg_len, msg);
     LOG(LL_INFO, (str));
@@ -325,7 +338,7 @@ enum mgos_app_init_result mgos_app_init(void)
                                   NULL);
 
 
-    mgos_mqtt_sub("ajustes", accion_ajustes, NULL);
+    mgos_mqtt_sub("config", accion_ajustes, NULL);
 
 //    mgos_register_http_endpoint("/foo", foo_handler, NULL);
 //    mgos_register_http_endpoint("/test", test, NULL);
