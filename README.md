@@ -9,14 +9,15 @@ Deberá estar funcionando para la feria del 30 de Octubre del 2019
 Se contará con un led que destellará cada 2 segundos. Se mantendrá encendido durante 50ms, para indicar que el sistema está funcionando de manera apropiada.  
 
 ### Control de Humedad / Temperatura
-Si el control automático de.... está habilitado, activará o desactivará los coolers en función del valor de ...  
+Si el control automático está habilitado, activará o desactivará los coolers en función del valor de ...  
 Se podrá comandar manualmente la activación de los coolers  
 
 ### Control de Luz
 Para controlar el modo automático de la luz se usaran como referencia 2 constantes. 
 La primera la llamaremos L y será un valor medio, y la segunda la llamaremos M y será un valor de margen a considerar. 
 Si se habilita el control automático, la lampara debe encender cuando la luz ambiente se encuentre por debajo de (L - M) y se debe apagar cuando la luz ambiente esté por encima de (L + M)
-En todo caso se podrá comandar manualmente el encendido y apagado de la lámpara. 
+En todo caso se podrá comandar manualmente el encendido y apagado de la lámpara.
+Se muestreará el nivel de luz con un período de 1 segundo
 
 
 # Visualización WEB
@@ -60,9 +61,15 @@ El mensaje será en formato JSON clave/valor. Por ejemplo:
 Donde 'f' se refiere a un numero de punto flotante y 'd' a un entero 
 El mensaje se enviará cuando...  
 El sistema se suscribirá a los tópicos para recibir comandos y ajustes desde la web:
-- suscripcion1
-- suscripcion2
-- ...
+  - /config 
+  - suscripcion1
+  - suscripcion2
+  - ...
+
+Se deberán procesar los siguientes mensajes
+"ctrl_humedad":false,   //Para habilitar/deshabilitar el control automático de Humedad
+"ctrl_luz":true,        //Para habilitar/deshabilitar el control automático de Luz
+
 Los datos de conexión al servidor son:  
 
 # Hardware

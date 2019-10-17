@@ -112,7 +112,7 @@ static void encender_led(void *arg)
   //  LOG(LL_INFO, tiempoInicio);
 //    if(mog)
 
-    mgos_gpio_write(LED_PIN, false);
+    mgos_gpio_write(LED_PIN, false);  //REEMPLAZAR POR --> ENCENDER_LED_TEST o APAGAR_LED_TEST , según corresponda
     apagarBoton=mgos_set_timer(DESTELLO, 0, apagar_led, NULL);
 
     (void) arg;
