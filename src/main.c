@@ -40,6 +40,12 @@
 #define CONFIGURAR_COOLER1 mgos_gpio_setup_output(PIN_COOLER_1, 0)
 #define INVERTIR_LED mgos_gpio_toggle(LED_PIN)
 
+#define TOPICO_LUZ "LUZ"
+#define TOPICO_COOLER "COOLER"
+#define TOPICO_AUTOMATICO_MANUAL "AUTOMATICO"
+#define TOPICO_TIEMPO_ENCENDIDO "TIEMPO_ENCENDIDO"
+#define TOPICO_TIEMPO_APAGADO "TIEMPO_APAGADO"
+
 bool encendidoFijo=false;
 int tiempoLed = 500;
 mgos_timer_id id=NULL;
@@ -165,17 +171,6 @@ static void accion_ajustes(struct mg_connection *nc, const char *topic,
                                                         void *ud)
     {
     char str[50];
-    struct objeto;
-    json_prettify(msg, msg_len, objeto);
-    if(objeto.ctr_luz==false){
-      sprintf(str, "apagar luz");
-      LOG(LL_INFO, (str));
-    } else {
-      sprintf(str, "encender luz");
-      LOG(LL_INFO, (str));
-    }
-
-
 
     sprintf(str, "recibido de %.*s -->%.*s", topic_len, topic, msg_len, msg);
     LOG(LL_INFO, (str));
@@ -338,7 +333,10 @@ enum mgos_app_init_result mgos_app_init(void)
                                   NULL);
 
 
-    mgos_mqtt_sub("config", accion_ajustes, NULL);
+    // mgos_mqtt_sub("config", accion_ajustes, NULL);
+    mgos_mqtt_sub(TOPICO_COOLER, ajustes_cooler, NULL);
+    mgos_mqtt_sub(TOPICO_COOLER, ajustes_luz, NULL);
+    mgos_mqtt_sub(TOPICO_COOLER, ajustes_automatico, NULL);
 
 //    mgos_register_http_endpoint("/foo", foo_handler, NULL);
 //    mgos_register_http_endpoint("/test", test, NULL);

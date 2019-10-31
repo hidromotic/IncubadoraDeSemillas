@@ -1,7 +1,7 @@
 /* clang-format off */
 /*
  * Generated file - do not edit.
- * Command: /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_111180116/deps/modules/mongoose-os/tools/mgos_gen_config.py --c_name=mgos_ro_vars --c_global_name=mgos_sys_ro_vars --dest_dir=/data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_111180116/build/gen/ /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_111180116/deps/modules/mongoose-os/src/mgos_ro_vars_schema.yaml
+ * Command: /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_347076980/deps/modules/mongoose-os/tools/mgos_gen_config.py --c_name=mgos_ro_vars --c_global_name=mgos_sys_ro_vars --dest_dir=/data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_347076980/build/gen/ /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_347076980/deps/modules/mongoose-os/src/mgos_ro_vars_schema.yaml
  */
 
 #pragma once
