@@ -21,7 +21,7 @@
 #include "mgos_http_server.h"
 #include "mgos_dht.h"
 #include "mgos_adc.h"
-
+//////////////////////************* ACA PONEMOS TODOS LOS DEFINE ***************////////////////////
 
 #define PIN_BOTON 0
 #define LED_PIN 2
@@ -46,6 +46,8 @@
 #define TOPICO_TIEMPO_ENCENDIDO "TIEMPO_ENCENDIDO"
 #define TOPICO_TIEMPO_APAGADO "TIEMPO_APAGADO"
 
+//////////////////////************* ACA PONEMOS TODAS LAS VARIABLES GLOBALES ***************////////////////////
+
 bool encendidoFijo=false;
 int tiempoLed = 500;
 mgos_timer_id id=NULL;
@@ -58,6 +60,9 @@ int umbral_luz=600;
 int margen_luz=100;
 string frase = '"ctr_luz":false';
 
+int estado_cooler;
+int estado_led;
+bool estado_automatico=false; // cuando es FALSE -> se manejan los controles de manera manual... cuando es TRUE -> se maneja con el automatico
 
 int tiempoEspera=5000;
 int tiempoPreaviso=1000;
@@ -164,7 +169,7 @@ static void foo_handler(struct mg_connection *c, int ev, void *p,
 }
 
 
-*/
+
 //TODO: tiempo de espera en una variable, poner en otra el tiempo de preaviso.
 static void accion_ajustes(struct mg_connection *nc, const char *topic,
                                                         int topic_len, const char *msg, int msg_len,
@@ -180,6 +185,69 @@ static void accion_ajustes(struct mg_connection *nc, const char *topic,
     (void) topic_len;
     (void) msg;
     (void) msg_len;
+
+}*/
+
+static void ajustes_cooler(struct mg_connection *nc, const char *topic, int topic_len, const char *msg, int msg_len, void *ud){
+char str[50];
+
+int nuevo_estado= msg.toInt();
+
+if(nuevo_estador==0 || nuevo_estado==1){
+  estado_cooler=nuevo_estado;
+}
+
+sprintf(str, "recibido de %.*s -->%.*s", topic_len, topic, msg_len, msg);
+LOG(LL_INFO, (str));
+
+(void) ud;
+(void) nc;
+(void) topic;
+(void) topic_len;
+(void) msg;
+(void) msg_len;
+
+}
+
+static void ajustes_led(struct mg_connection *nc, const char *topic, int topic_len, const char *msg, int msg_len, void *ud){
+char str[50];
+
+int nuevo_estado= msg.toInt();
+
+if(nuevo_estador>-1 && nuevo_estado<256){
+  estado_led=nuevo_estado;
+}
+
+sprintf(str, "recibido de %.*s -->%.*s", topic_len, topic, msg_len, msg);
+LOG(LL_INFO, (str));
+
+(void) ud;
+(void) nc;
+(void) topic;
+(void) topic_len;
+(void) msg;
+(void) msg_len;
+
+}
+
+static void ajustes_automatico(struct mg_connection *nc, const char *topic, int topic_len, const char *msg, int msg_len, void *ud){
+char str[50];
+
+bool nuevo_estado= msg;
+
+if(nuevo_estador==true || nuevo_estado==false){
+  estado_automatico=nuevo_estado;
+}
+
+sprintf(str, "recibido de %.*s -->%.*s", topic_len, topic, msg_len, msg);
+LOG(LL_INFO, (str));
+
+(void) ud;
+(void) nc;
+(void) topic;
+(void) topic_len;
+(void) msg;
+(void) msg_len;
 
 }
 
