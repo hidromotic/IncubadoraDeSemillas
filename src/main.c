@@ -21,6 +21,7 @@
 #include "mgos_http_server.h"
 #include "mgos_dht.h"
 #include "mgos_adc.h"
+#include "mgos_pwm.h"
 //////////////////////************* ACA PONEMOS TODOS LOS DEFINE ***************////////////////////
 
 #define PIN_BOTON 0
@@ -31,13 +32,13 @@
 #define PIN_DHT 5 // es igual a D1
 #define DESTELLO 50
 #define PIN_LDR 0 // A0 es igual a 17
-#define PIN_COOLER_1 14 // GPIO14 = D5
+#define PIN_COOLER 15 // GPIO15 = D8
 #define PIN_COOLER_2 12 // GPIO12 = D6
 #define PIN_TIRA_LED 4 // GPIO04 = D2
 #define CONFIGURAR_PIN_LED mgos_gpio_setup_output(PIN_TIRA_LED, 0)
-#define ACTIVAR_COOLER_1 mgos_gpio_write(PIN_COOLER_1, true)
-#define DESACTIVAR_COOLER1 mgos_gpio_write(PIN_COOLER_1, false)
-#define CONFIGURAR_COOLER1 mgos_gpio_setup_output(PIN_COOLER_1, 0)
+#define ACTIVAR_COOLER_1 mgos_gpio_write(PIN_COOLER, true)
+#define DESACTIVAR_COOLER1 mgos_gpio_write(PIN_COOLER, false)
+#define CONFIGURAR_COOLER1 mgos_gpio_setup_output(PIN_COOLER, 0)
 #define INVERTIR_LED mgos_gpio_toggle(LED_PIN)
 
 // topicos donde nos subscribimos
@@ -72,8 +73,8 @@ int umbral_luz=600;
 int margen_luz=100;
 
 
-int estado_cooler;
-int estado_led;
+int estado_cooler=0;
+int estado_led=0;
 bool estado_automatico;
 
 int tiempoEspera=5000;
@@ -97,6 +98,17 @@ static void led_test(void *arg);
 static void apagar_led(void *arg);
 static void control_luz(void *arg);
 static void leer_publicar(void *arg);
+static void actualizar_salidas(void *arg);
+
+static void actualizar_salidas(void *arg){
+  mgos_gpio_write(PIN_COOLER, estado_cooler);
+
+  float duty=estado_led/255;
+
+  mgos_pwm_set(PIN_TIRA_LED, 50, duty);
+
+  (void) arg;
+}
 
 static void leer_publicar(void *arg){
   temp = mgos_dht_get_temp(dht);
@@ -195,6 +207,8 @@ if(nuevo_estado==0 || nuevo_estado==1){
 sprintf(str, "recibido de %.*s -->%.*s", topic_len, topic, msg_len, msg);
 LOG(LL_INFO, (str));
 
+actualizar_salidas(NULL);
+
 (void) ud;
 (void) nc;
 (void) topic;
@@ -209,9 +223,9 @@ char str[50];
 
 int nuevo_estado= atoi(msg);
 
-if(nuevo_estado>-1 && nuevo_estado<256){
+
   estado_led=nuevo_estado;
-}
+
 
 sprintf(str, "recibido de %.*s -->%.*s", topic_len, topic, msg_len, msg);
 LOG(LL_INFO, (str));

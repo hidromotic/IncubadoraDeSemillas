@@ -39,6 +39,9 @@ sources:
 - /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/dht/src/mgos_dht.c
 - /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/http-server/src/mgos_http_server.c
 - /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/mqtt/src/mgos_mqtt.c
+- /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/pwm/src/mgos_pwm.c
+- /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/pwm/src/mgos_pwm_rgb_led.c
+- /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/pwm/src/esp8266/esp_pwm.c
 - /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/rpc-common/src/mg_rpc.c
 - /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/rpc-common/src/mg_rpc_channel.c
 - /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/rpc-common/src/mg_rpc_channel_http.c
@@ -77,6 +80,7 @@ includes:
 - /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/ota-common/include
 - /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/ota-common/include/esp8266
 - /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/ota-http-client/include
+- /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/pwm/include
 - /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/rpc-common/include
 - /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/rpc-service-config/include
 - /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/rpc-service-fs/include
@@ -683,6 +687,7 @@ build_vars:
   MGOS_HAVE_OTA_COMMON: "1"
   MGOS_HAVE_OTA_HTTP_CLIENT: "1"
   MGOS_HAVE_OTA_HTTP_SERVER: "1"
+  MGOS_HAVE_PWM: "1"
   MGOS_HAVE_RPC_COMMON: "1"
   MGOS_HAVE_RPC_SERVICE_CONFIG: "1"
   MGOS_HAVE_RPC_SERVICE_FS: "1"
@@ -726,6 +731,7 @@ cdefs:
   MGOS_HAVE_OTA_COMMON: "1"
   MGOS_HAVE_OTA_HTTP_CLIENT: "1"
   MGOS_HAVE_OTA_HTTP_SERVER: "1"
+  MGOS_HAVE_PWM: "1"
   MGOS_HAVE_RPC_COMMON: "1"
   MGOS_HAVE_RPC_SERVICE_CONFIG: "1"
   MGOS_HAVE_RPC_SERVICE_FS: "1"
@@ -900,6 +906,17 @@ libs_handled:
   - ota-common
   - ota-http-client
 - lib:
+    origin: https://github.com/mongoose-os-libs/pwm
+    location: https://github.com/mongoose-os-libs/pwm
+    name: pwm
+  path: /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/pwm
+  init_deps:
+  - core
+  sources:
+  - /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/pwm/src/mgos_pwm.c
+  - /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/pwm/src/mgos_pwm_rgb_led.c
+  - /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_675576878/deps/pwm/src/esp8266/esp_pwm.c
+- lib:
     origin: https://github.com/mongoose-os-libs/rpc-common
     location: https://github.com/mongoose-os-libs/rpc-common
     name: rpc-common
@@ -1008,6 +1025,7 @@ init_deps:
 - mqtt
 - ota-http-client
 - ota-http-server
+- pwm
 - rpc-common
 - rpc-service-config
 - rpc-service-fs

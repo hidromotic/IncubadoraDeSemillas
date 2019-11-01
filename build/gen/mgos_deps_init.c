@@ -24,6 +24,7 @@ extern bool mgos_mbedtls_init(void);
 extern bool mgos_mqtt_init(void);
 extern bool mgos_ota_http_client_init(void);
 extern bool mgos_ota_http_server_init(void);
+extern bool mgos_pwm_init(void);
 extern bool mgos_rpc_common_init(void);
 extern bool mgos_rpc_service_config_init(void);
 extern bool mgos_rpc_service_fs_init(void);
@@ -84,6 +85,9 @@ static const struct lib_descr {
 
     // "ota-http-server". deps: [ "core" "http-server" "ota-common" "ota-http-client" ]
     {.title = "ota-http-server", .init = mgos_ota_http_server_init},
+
+    // "pwm". deps: [ "core" ]
+    {.title = "pwm", .init = mgos_pwm_init},
 
     // "rpc-common". deps: [ "core" "http-server" "mongoose" ]
     {.title = "rpc-common", .init = mgos_rpc_common_init},
