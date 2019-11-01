@@ -28,7 +28,7 @@
 #define ENCENDER_LED_TESTEO mgos_gpio_write(LED_PIN, false)
 #define APAGAR_LED_TESTEO mgos_gpio_write(LED_PIN, true)
 #define BOTON_PRESIONADO mgos_gpio_read(PIN_BOTON)==0
-#define PIN_DHT 5
+#define PIN_DHT 5 // es igual a D1
 #define DESTELLO 50
 #define PIN_LDR 0 // A0 es igual a 17
 #define PIN_COOLER_1 14 // GPIO14 = D5
@@ -40,11 +40,23 @@
 #define CONFIGURAR_COOLER1 mgos_gpio_setup_output(PIN_COOLER_1, 0)
 #define INVERTIR_LED mgos_gpio_toggle(LED_PIN)
 
+// topicos donde nos subscribimos
 #define TOPICO_LUZ "LUZ"
 #define TOPICO_COOLER "COOLER"
 #define TOPICO_AUTOMATICO_MANUAL "AUTOMATICO"
 #define TOPICO_TIEMPO_ENCENDIDO "TIEMPO_ENCENDIDO"
 #define TOPICO_TIEMPO_APAGADO "TIEMPO_APAGADO"
+
+// topicos donde publicamos
+#define PUB_TOPIC_LUZ "iluminacion"
+#define PUB_TOPIC_TEMP "Temperatura"
+#define PUB_TOPIC_HUM "Humedad"
+#define PUB_TOPIC_SALIDA_COOLER "SALIDA_COOLER"
+#define PUB_TOPIC_SALIDA_LED "SALIDA_LED"
+
+#define ESTADO_CONTROL_MANUAL 1
+#define ESTADO_CONTROL_AUTOMATICO 0
+#define INTERVALO_DE_PUBLICACION 1000
 
 //////////////////////************* ACA PONEMOS TODAS LAS VARIABLES GLOBALES ***************////////////////////
 
@@ -58,11 +70,11 @@ mgos_timer_id timercb=NULL;
 bool secuencia_bomba_en_accion=false;
 int umbral_luz=600;
 int margen_luz=100;
-string frase = '"ctr_luz":false';
+
 
 int estado_cooler;
 int estado_led;
-bool estado_automatico=false; // cuando es FALSE -> se manejan los controles de manera manual... cuando es TRUE -> se maneja con el automatico
+bool estado_automatico;
 
 int tiempoEspera=5000;
 int tiempoPreaviso=1000;
@@ -84,6 +96,28 @@ static void mostrar_pulsaciones(void *arg);
 static void led_test(void *arg);
 static void apagar_led(void *arg);
 static void control_luz(void *arg);
+static void leer_publicar(void *arg);
+
+static void leer_publicar(void *arg){
+  temp = mgos_dht_get_temp(dht);
+  hum = mgos_dht_get_humidity(dht);
+  luz = mgos_adc_read(PIN_LDR);
+  char str[20];
+  sprintf(str, "Temperatura: %2.2f", temp);
+  LOG(LL_INFO, (str));
+  sprintf(str, "Humedad: %2.2f", hum);
+  LOG(LL_INFO, (str));
+  sprintf(str, "LUZ: %d", luz);
+  LOG(LL_INFO, (str));
+
+  mgos_mqtt_pubf(PUB_TOPIC_TEMP, 1, false, "%f", temp);
+  mgos_mqtt_pubf(PUB_TOPIC_HUM, 1, false, "%f", hum);
+  mgos_mqtt_pubf(PUB_TOPIC_LUZ, 1, false, "%d", luz);
+
+  mgos_mqtt_pubf("Sensor", 1, false, "{advice: %Q, luz: %d, humedad: %f, temperatura: %f}", mgos_sys_config_get_device_id(), luz, hum, temp);
+  (void) arg;
+
+}
 
 static void control_luz(void *arg){
   luz = mgos_adc_read(PIN_LDR);
@@ -129,48 +163,7 @@ static void encender_led(void *arg)
 
     (void) arg;
     }
-
-
 /*
-static void foo_handler(struct mg_connection *c, int ev, void *p,
-                                void *user_data) {
-          (void) p;
-          (void) c;
-          (void) ev;
-          tiempoLed=1000;
-          (void) user_data;
-        }
-
-static void test(struct mg_connection *c, int ev, void *p,
-                        void *user_data) {
-      (void) p;
-      if (ev != MG_EV_HTTP_REQUEST) return;
-      LOG(LL_INFO, ("prueba"));
-      tiempoLed=1000;
-      (void) c;
-      (void) user_data;
-
-}
-
-static void foo_handler(struct mg_connection *c, int ev, void *p,
-                        void *user_data) {
-  (void) p;
-  if (ev != MG_EV_HTTP_REQUEST) return;
-  LOG(LL_INFO, ("Foo requested"));
-  mg_send_response_line(c, 200,
-                        "Content-Type: text/html\r\n");
-  //tiempoLed=1000;
-  mg_printf(c, "<class='image fit'><img src='%s.jpg'/></a>", tiempoLed==100 ? "dos" : "uno");
-  mg_printf(c, "<script type='text/javascript'>setTimeout('location.reload()', 1000);</script>");
-  mg_printf(c, "<h5>El Tiempo de encendido del Led es: %d <h5>", tiempoLed);
-  mg_printf(c, "<p><a href='test'><span>Click aquí</span></a></p>");
-//  c->flags |= (MG_F_SEND_AND_CLOSE | MGOS_F_RELOAD_CONFIG);
-  (void) user_data;
-}
-
-
-
-//TODO: tiempo de espera en una variable, poner en otra el tiempo de preaviso.
 static void accion_ajustes(struct mg_connection *nc, const char *topic,
                                                         int topic_len, const char *msg, int msg_len,
                                                         void *ud)
@@ -191,9 +184,11 @@ static void accion_ajustes(struct mg_connection *nc, const char *topic,
 static void ajustes_cooler(struct mg_connection *nc, const char *topic, int topic_len, const char *msg, int msg_len, void *ud){
 char str[50];
 
-int nuevo_estado= msg.toInt();
 
-if(nuevo_estador==0 || nuevo_estado==1){
+
+int nuevo_estado= atoi(msg);
+
+if(nuevo_estado==0 || nuevo_estado==1){
   estado_cooler=nuevo_estado;
 }
 
@@ -212,9 +207,9 @@ LOG(LL_INFO, (str));
 static void ajustes_led(struct mg_connection *nc, const char *topic, int topic_len, const char *msg, int msg_len, void *ud){
 char str[50];
 
-int nuevo_estado= msg.toInt();
+int nuevo_estado= atoi(msg);
 
-if(nuevo_estador>-1 && nuevo_estado<256){
+if(nuevo_estado>-1 && nuevo_estado<256){
   estado_led=nuevo_estado;
 }
 
@@ -233,10 +228,12 @@ LOG(LL_INFO, (str));
 static void ajustes_automatico(struct mg_connection *nc, const char *topic, int topic_len, const char *msg, int msg_len, void *ud){
 char str[50];
 
-bool nuevo_estado= msg;
+int nuevo_estado= atoi(msg);
 
-if(nuevo_estador==true || nuevo_estado==false){
-  estado_automatico=nuevo_estado;
+if(nuevo_estado==ESTADO_CONTROL_MANUAL){
+  estado_automatico=ESTADO_CONTROL_MANUAL;
+} else if(nuevo_estado==ESTADO_CONTROL_AUTOMATICO) {
+  estado_automatico=ESTADO_CONTROL_AUTOMATICO;
 }
 
 sprintf(str, "recibido de %.*s -->%.*s", topic_len, topic, msg_len, msg);
@@ -395,6 +392,8 @@ enum mgos_app_init_result mgos_app_init(void)
 
     mgos_set_timer(500, MGOS_TIMER_REPEAT, control_luz, NULL);
 
+    mgos_set_timer(INTERVALO_DE_PUBLICACION, MGOS_TIMER_REPEAT, leer_publicar, NULL);
+
     mgos_gpio_set_button_handler(PIN_BOTON, MGOS_GPIO_PULL_UP,
                                   MGOS_GPIO_INT_EDGE_NEG,
                                   100, cb_boton_pulsado,
@@ -403,8 +402,8 @@ enum mgos_app_init_result mgos_app_init(void)
 
     // mgos_mqtt_sub("config", accion_ajustes, NULL);
     mgos_mqtt_sub(TOPICO_COOLER, ajustes_cooler, NULL);
-    mgos_mqtt_sub(TOPICO_COOLER, ajustes_luz, NULL);
-    mgos_mqtt_sub(TOPICO_COOLER, ajustes_automatico, NULL);
+    mgos_mqtt_sub(TOPICO_LUZ, ajustes_led, NULL);
+    mgos_mqtt_sub(TOPICO_AUTOMATICO_MANUAL, ajustes_automatico, NULL);
 
 //    mgos_register_http_endpoint("/foo", foo_handler, NULL);
 //    mgos_register_http_endpoint("/test", test, NULL);
