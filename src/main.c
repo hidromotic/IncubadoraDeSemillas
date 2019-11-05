@@ -59,6 +59,14 @@
 #define ESTADO_CONTROL_AUTOMATICO 0
 #define INTERVALO_DE_PUBLICACION 1000
 
+// Umbrales de luz y Temperatura
+int umbral_luz=600;
+int margen_luz=100;
+int umbral_temp=23;
+int margen_temp=7
+int umbral_hum=18;
+int margen_hum=5;
+
 //////////////////////************* ACA PONEMOS TODAS LAS VARIABLES GLOBALES ***************////////////////////
 
 bool encendidoFijo=false;
@@ -68,9 +76,9 @@ mgos_timer_id soltar=NULL;
 mgos_timer_id tmpBomba=NULL;
 mgos_timer_id apagarBoton=NULL;
 mgos_timer_id timercb=NULL;
+mgos_timer_id automatico_encendido=NULL;
 bool secuencia_bomba_en_accion=false;
-int umbral_luz=600;
-int margen_luz=100;
+
 
 
 int estado_cooler=0;
@@ -99,6 +107,7 @@ static void apagar_led(void *arg);
 static void control_luz(void *arg);
 static void leer_publicar(void *arg);
 static void actualizar_salidas(void *arg);
+static void automatico_en_accion(void *arg);
 
 static void actualizar_salidas(void *arg){
   mgos_gpio_write(PIN_COOLER, estado_cooler);
@@ -107,6 +116,24 @@ static void actualizar_salidas(void *arg){
 
   mgos_pwm_set(PIN_TIRA_LED, 50, duty);
 
+  (void) arg;
+}
+static void automatico_en_accion(void *arg){
+  control_luz(NULL);
+  // control de la temperatura
+  if(temp>(umbral_temp+margen_temp)){
+    estado_cooler=1;
+  }
+  if(temp<(umbral_temp-margen_temp)){
+    estado_cooler=0;
+  }
+  // control de la humedad
+  if(hum>(umbral_hum+margen_hum)){
+    estado_cooler=1;
+  }
+  if(hum<(umbral_hum-margen_hum)){
+    estado_cooler=0;
+  }
   (void) arg;
 }
 
@@ -132,12 +159,11 @@ static void leer_publicar(void *arg){
 }
 
 static void control_luz(void *arg){
-  luz = mgos_adc_read(PIN_LDR);
   if(luz<(umbral_luz-margen_luz)){
-    mgos_gpio_write(PIN_TIRA_LED, true);
+    estado_led=0;
   }
   if(luz>(umbral_luz+margen_luz)){
-    mgos_gpio_write(PIN_TIRA_LED, false);
+    if(estado_led<255) estado_led+=5;
   }
   (void) arg;
 }
@@ -199,7 +225,7 @@ char str[50];
 
 
 int nuevo_estado= atoi(msg);
-
+if(estado_automatico==ESTADO_CONTROL_AUTOMATICO) return;
 if(nuevo_estado==0 || nuevo_estado==1){
   estado_cooler=nuevo_estado;
 }
@@ -207,7 +233,7 @@ if(nuevo_estado==0 || nuevo_estado==1){
 sprintf(str, "recibido de %.*s -->%.*s", topic_len, topic, msg_len, msg);
 LOG(LL_INFO, (str));
 
-actualizar_salidas(NULL);
+
 
 (void) ud;
 (void) nc;
@@ -223,7 +249,7 @@ char str[50];
 
 int nuevo_estado= atoi(msg);
 
-
+  if(estado_automatico==ESTADO_CONTROL_AUTOMATICO) return;
   estado_led=nuevo_estado;
 
 
@@ -246,8 +272,10 @@ int nuevo_estado= atoi(msg);
 
 if(nuevo_estado==ESTADO_CONTROL_MANUAL){
   estado_automatico=ESTADO_CONTROL_MANUAL;
+  mgos_clear_timer(automatico_encendido);
 } else if(nuevo_estado==ESTADO_CONTROL_AUTOMATICO) {
   estado_automatico=ESTADO_CONTROL_AUTOMATICO;
+  automatico_encendido=mgos_set_timer(500, MGOS_TIMER_REPEAT, automatico_en_accion, NULL);
 }
 
 sprintf(str, "recibido de %.*s -->%.*s", topic_len, topic, msg_len, msg);
@@ -405,6 +433,8 @@ enum mgos_app_init_result mgos_app_init(void)
     mgos_set_timer(2000, MGOS_TIMER_REPEAT, led_test, NULL);
 
     mgos_set_timer(500, MGOS_TIMER_REPEAT, control_luz, NULL);
+
+    mgos_set_timer(100, MGOS_TIMER_REPEAT, actualizar_salidas, NULL);
 
     mgos_set_timer(INTERVALO_DE_PUBLICACION, MGOS_TIMER_REPEAT, leer_publicar, NULL);
 
