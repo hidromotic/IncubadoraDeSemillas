@@ -63,7 +63,7 @@
 int umbral_luz=600;
 int margen_luz=100;
 int umbral_temp=23;
-int margen_temp=7
+int margen_temp=7;
 int umbral_hum=18;
 int margen_hum=5;
 
@@ -83,7 +83,7 @@ bool secuencia_bomba_en_accion=false;
 
 int estado_cooler=0;
 int estado_led=0;
-bool estado_automatico;
+bool estado_automatico=ESTADO_CONTROL_MANUAL;
 
 int tiempoEspera=5000;
 int tiempoPreaviso=1000;
@@ -112,12 +112,16 @@ static void automatico_en_accion(void *arg);
 static void actualizar_salidas(void *arg){
   mgos_gpio_write(PIN_COOLER, estado_cooler);
 
-  float duty=estado_led/255;
+  float duty=estado_led/255.0;
+  char str[50];
+  sprintf(str, "Estado de LED: %d - %f", estado_led, duty);
+  LOG(LL_INFO, (str));
 
-  mgos_pwm_set(PIN_TIRA_LED, 50, duty);
+  mgos_pwm_set(PIN_TIRA_LED, 100, duty);
 
   (void) arg;
 }
+
 static void automatico_en_accion(void *arg){
   control_luz(NULL);
   // control de la temperatura
@@ -160,10 +164,10 @@ static void leer_publicar(void *arg){
 
 static void control_luz(void *arg){
   if(luz<(umbral_luz-margen_luz)){
-    estado_led=0;
+    if(estado_led>5) estado_led-=5;
   }
   if(luz>(umbral_luz+margen_luz)){
-    if(estado_led<255) estado_led+=5;
+    if(estado_led<250) estado_led+=5;
   }
   (void) arg;
 }
@@ -253,6 +257,8 @@ int nuevo_estado= atoi(msg);
   estado_led=nuevo_estado;
 
 
+
+
 sprintf(str, "recibido de %.*s -->%.*s", topic_len, topic, msg_len, msg);
 LOG(LL_INFO, (str));
 
@@ -275,7 +281,7 @@ if(nuevo_estado==ESTADO_CONTROL_MANUAL){
   mgos_clear_timer(automatico_encendido);
 } else if(nuevo_estado==ESTADO_CONTROL_AUTOMATICO) {
   estado_automatico=ESTADO_CONTROL_AUTOMATICO;
-  automatico_encendido=mgos_set_timer(500, MGOS_TIMER_REPEAT, automatico_en_accion, NULL);
+  automatico_encendido=mgos_set_timer(1000, MGOS_TIMER_REPEAT, automatico_en_accion, NULL);
 }
 
 sprintf(str, "recibido de %.*s -->%.*s", topic_len, topic, msg_len, msg);
@@ -427,12 +433,11 @@ enum mgos_app_init_result mgos_app_init(void)
     CONFIGURAR_COOLER1;
     CONFIGURAR_PIN_LED;
     DESACTIVAR_COOLER1;
+
     //mgos_set_timer(2000 /* ms */, MGOS_TIMER_REPEAT, encender_led, NULL);
     mgos_gpio_write(LED_PIN, true);
 
     mgos_set_timer(2000, MGOS_TIMER_REPEAT, led_test, NULL);
-
-    mgos_set_timer(500, MGOS_TIMER_REPEAT, control_luz, NULL);
 
     mgos_set_timer(100, MGOS_TIMER_REPEAT, actualizar_salidas, NULL);
 
