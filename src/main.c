@@ -105,9 +105,10 @@ static void mostrar_pulsaciones(void *arg);
 static void led_test(void *arg);
 static void apagar_led(void *arg);
 static void control_luz(void *arg);
-static void leer_publicar(void *arg);
+static void publicar(void *arg);
 static void actualizar_salidas(void *arg);
 static void automatico_en_accion(void *arg);
+static void leer_sensores(void *arg);
 
 static void actualizar_salidas(void *arg){
   mgos_gpio_write(PIN_COOLER, estado_cooler);
@@ -115,9 +116,9 @@ static void actualizar_salidas(void *arg){
   float duty=estado_led/255.0;
   char str[50];
   sprintf(str, "Estado de LED: %d - %f", estado_led, duty);
-  LOG(LL_INFO, (str));
+//  LOG(LL_INFO, (str));
 
-  mgos_pwm_set(PIN_TIRA_LED, 100, duty);
+  mgos_pwm_set(PIN_TIRA_LED, 1000, duty);
 
   (void) arg;
 }
@@ -141,10 +142,22 @@ static void automatico_en_accion(void *arg){
   (void) arg;
 }
 
-static void leer_publicar(void *arg){
+static void leer_sensores(void *arg){
+  static int contador=0;
+  static int luz_parcial=0;
+  luz_parcial+= mgos_adc_read(PIN_LDR);
+  contador++;
+  if(contador==10){
+    contador=0;
+    luz = luz_parcial/10;
+    luz_parcial=0;
+  }
   temp = mgos_dht_get_temp(dht);
   hum = mgos_dht_get_humidity(dht);
-  luz = mgos_adc_read(PIN_LDR);
+  (void) arg;
+}
+
+static void publicar(void *arg){
   char str[20];
   sprintf(str, "Temperatura: %2.2f", temp);
   LOG(LL_INFO, (str));
@@ -441,7 +454,9 @@ enum mgos_app_init_result mgos_app_init(void)
 
     mgos_set_timer(100, MGOS_TIMER_REPEAT, actualizar_salidas, NULL);
 
-    mgos_set_timer(INTERVALO_DE_PUBLICACION, MGOS_TIMER_REPEAT, leer_publicar, NULL);
+    mgos_set_timer(INTERVALO_DE_PUBLICACION, MGOS_TIMER_REPEAT, publicar, NULL);
+
+    mgos_set_timer(10, MGOS_TIMER_REPEAT, leer_sensores, NULL);
 
     mgos_gpio_set_button_handler(PIN_BOTON, MGOS_GPIO_PULL_UP,
                                   MGOS_GPIO_INT_EDGE_NEG,
