@@ -83,3 +83,8 @@ Batería?? Voltaje??? Autonomía esperada?? Función de la batería???
 - Un toque de botón --> Publicar el valor de Temperatura+Humedad+LDR
 - Dos toques de botón --> Invertir el estado de la lámpara de Led
 - Tres toques de botón --> Invertir el estado de los Coolers
+
+# TODO:
+[ ] - Recibir ajustes de parámetros control del Cooler.  
+[ ] - Implementación de Sincronización horaria vía SNTP  
+[ ] - 
