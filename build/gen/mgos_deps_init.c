@@ -32,6 +32,7 @@ extern bool mgos_rpc_service_gpio_init(void);
 extern bool mgos_rpc_service_ota_init(void);
 extern bool mgos_rpc_uart_init(void);
 extern bool mgos_rpc_ws_init(void);
+extern bool mgos_sntp_init(void);
 
 static const struct lib_descr {
   const char *title;
@@ -109,6 +110,9 @@ static const struct lib_descr {
 
     // "rpc-ws". deps: [ "core" "http-server" "rpc-common" ]
     {.title = "rpc-ws", .init = mgos_rpc_ws_init},
+
+    // "sntp". deps: [ "core" ]
+    {.title = "sntp", .init = mgos_sntp_init},
 
 };
 

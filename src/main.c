@@ -47,6 +47,10 @@
 #define TOPICO_AUTOMATICO_MANUAL "AUTOMATICO"
 #define TOPICO_TIEMPO_ENCENDIDO "TIEMPO_ENCENDIDO"
 #define TOPICO_TIEMPO_APAGADO "TIEMPO_APAGADO"
+#define TOPICO_UMBRAL_LUZ "UMBRAL_LUZ"
+#define TOPICO_MARGEN_LUZ "MARGEN_LUZ"
+#define TOPICO_UMBRAL_TEMP "UMBRAL_TEMPERATURA"
+#define TOPICO_MARGEN_TEMP "MARGEN_TEMPERATURA"
 
 // topicos donde publicamos
 #define PUB_TOPIC_LUZ "iluminacion"
@@ -64,8 +68,6 @@ int umbral_luz=600;
 int margen_luz=100;
 int umbral_temp=23;
 int margen_temp=7;
-int umbral_hum=18;
-int margen_hum=5;
 
 //////////////////////************* ACA PONEMOS TODAS LAS VARIABLES GLOBALES ***************////////////////////
 
@@ -110,6 +112,16 @@ static void actualizar_salidas(void *arg);
 static void automatico_en_accion(void *arg);
 static void leer_sensores(void *arg);
 
+static void mostrar_tiempo(void *arg){
+//  time_t tiempo = mg_time();
+  time_t epoch = (time_t) mg_time();
+  struct tm *tmp = localtime(&epoch);
+  char str[50];
+  sprintf(str, "tiempo epoch: %d", tmp.tm_hour);
+  LOG(LL_INFO, (str));
+  (void) arg;
+}
+
 static void actualizar_salidas(void *arg){
   mgos_gpio_write(PIN_COOLER, estado_cooler);
 
@@ -128,17 +140,11 @@ static void automatico_en_accion(void *arg){
   // control de la temperatura
   if(temp>(umbral_temp+margen_temp)){
     estado_cooler=1;
-  }
-  if(temp<(umbral_temp-margen_temp)){
+  } else {
     estado_cooler=0;
   }
-  // control de la humedad
-  if(hum>(umbral_hum+margen_hum)){
-    estado_cooler=1;
-  }
-  if(hum<(umbral_hum-margen_hum)){
-    estado_cooler=0;
-  }
+
+
   (void) arg;
 }
 
@@ -235,6 +241,64 @@ static void accion_ajustes(struct mg_connection *nc, const char *topic,
     (void) msg_len;
 
 }*/
+static void ajustes_margen_temp(struct mg_connection *nc, const char *topic, int topic_len, const char *msg, int msg_len, void *ud){
+
+
+  int nuevo_margen= atoi(msg);
+  margen_temp=nuevo_margen;
+
+(void) ud;
+(void) nc;
+(void) topic;
+(void) topic_len;
+(void) msg;
+(void) msg_len;
+
+}
+
+static void ajustes_umbral_temp(struct mg_connection *nc, const char *topic, int topic_len, const char *msg, int msg_len, void *ud){
+
+
+  int nuevo_umbral= atoi(msg);
+  umbral_temp=nuevo_umbral;
+
+(void) ud;
+(void) nc;
+(void) topic;
+(void) topic_len;
+(void) msg;
+(void) msg_len;
+
+}
+
+static void ajustes_umbral_luz(struct mg_connection *nc, const char *topic, int topic_len, const char *msg, int msg_len, void *ud){
+
+
+  int nuevo_umbral= atoi(msg);
+  umbral_luz=nuevo_umbral;
+
+(void) ud;
+(void) nc;
+(void) topic;
+(void) topic_len;
+(void) msg;
+(void) msg_len;
+
+}
+
+static void ajustes_margen_luz(struct mg_connection *nc, const char *topic, int topic_len, const char *msg, int msg_len, void *ud){
+
+
+int nuevo_margen= atoi(msg);
+margen_luz=nuevo_margen;
+(void) ud;
+(void) nc;
+(void) topic;
+(void) topic_len;
+(void) msg;
+(void) msg_len;
+
+}
 
 static void ajustes_cooler(struct mg_connection *nc, const char *topic, int topic_len, const char *msg, int msg_len, void *ud){
 char str[50];
@@ -458,6 +522,8 @@ enum mgos_app_init_result mgos_app_init(void)
 
     mgos_set_timer(10, MGOS_TIMER_REPEAT, leer_sensores, NULL);
 
+    mgos_set_timer(1000, MGOS_TIMER_REPEAT, mostrar_tiempo, NULL);
+
     mgos_gpio_set_button_handler(PIN_BOTON, MGOS_GPIO_PULL_UP,
                                   MGOS_GPIO_INT_EDGE_NEG,
                                   100, cb_boton_pulsado,
@@ -468,6 +534,10 @@ enum mgos_app_init_result mgos_app_init(void)
     mgos_mqtt_sub(TOPICO_COOLER, ajustes_cooler, NULL);
     mgos_mqtt_sub(TOPICO_LUZ, ajustes_led, NULL);
     mgos_mqtt_sub(TOPICO_AUTOMATICO_MANUAL, ajustes_automatico, NULL);
+    mgos_mqtt_sub(TOPICO_UMBRAL_LUZ, ajustes_umbral_luz, NULL);
+    mgos_mqtt_sub(TOPICO_MARGEN_LUZ, ajustes_margen_luz, NULL);
+    mgos_mqtt_sub(TOPICO_UMBRAL_TEMP, ajustes_umbral_temp, NULL);
+    mgos_mqtt_sub(TOPICO_MARGEN_TEMP, ajustes_margen_temp, NULL);
 
 //    mgos_register_http_endpoint("/foo", foo_handler, NULL);
 //    mgos_register_http_endpoint("/test", test, NULL);
