@@ -22,6 +22,7 @@
 #include "mgos_dht.h"
 #include "mgos_adc.h"
 #include "mgos_pwm.h"
+#include "mgos_cron.h"
 //////////////////////************* ACA PONEMOS TODOS LOS DEFINE ***************////////////////////
 
 #define PIN_BOTON 0
@@ -83,6 +84,7 @@ bool secuencia_bomba_en_accion=false;
 
 
 
+
 int estado_cooler=0;
 int estado_led=0;
 bool estado_automatico=ESTADO_CONTROL_MANUAL;
@@ -111,16 +113,18 @@ static void publicar(void *arg);
 static void actualizar_salidas(void *arg);
 static void automatico_en_accion(void *arg);
 static void leer_sensores(void *arg);
-
+/*
 static void mostrar_tiempo(void *arg){
 //  time_t tiempo = mg_time();
-  time_t epoch = (time_t) mg_time();
-  struct tm *tmp = localtime(&epoch);
-  char str[50];
-  sprintf(str, "tiempo epoch: %d", tmp.tm_hour);
+
+
+  char str[80];
+  sprintf(str, "tiempo Hora: %d:%d:%d", tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
+  LOG(LL_INFO, (str));
+  sprintf(str, "tiempo Dia: %d", tmp->tm_mday);
   LOG(LL_INFO, (str));
   (void) arg;
-}
+}*/
 
 static void actualizar_salidas(void *arg){
   mgos_gpio_write(PIN_COOLER, estado_cooler);
@@ -143,7 +147,6 @@ static void automatico_en_accion(void *arg){
   } else {
     estado_cooler=0;
   }
-
 
   (void) arg;
 }
@@ -241,6 +244,19 @@ static void accion_ajustes(struct mg_connection *nc, const char *topic,
     (void) msg_len;
 
 }*/
+static void ejemplo_cron(void *user_data, mgos_cron_id_t id){
+  time_t epoch = (time_t) mg_time();
+  struct tm *tmp = localtime(&epoch);
+
+  char str[80];
+  sprintf(str, "tiempo Hora: %d:%d:%d", tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
+  LOG(LL_INFO, (str));
+  sprintf(str, "tiempo Dia: %d", tmp->tm_mday);
+  LOG(LL_INFO, (str));
+  (void) id;
+  (void) user_data;
+}
+
 static void ajustes_margen_temp(struct mg_connection *nc, const char *topic, int topic_len, const char *msg, int msg_len, void *ud){
 
 
@@ -510,7 +526,8 @@ enum mgos_app_init_result mgos_app_init(void)
     CONFIGURAR_COOLER1;
     CONFIGURAR_PIN_LED;
     DESACTIVAR_COOLER1;
-
+    setenv("TZ", "America/Argentina/Buenos_Aires", 1);
+    tzset();
     //mgos_set_timer(2000 /* ms */, MGOS_TIMER_REPEAT, encender_led, NULL);
     mgos_gpio_write(LED_PIN, true);
 
@@ -522,7 +539,7 @@ enum mgos_app_init_result mgos_app_init(void)
 
     mgos_set_timer(10, MGOS_TIMER_REPEAT, leer_sensores, NULL);
 
-    mgos_set_timer(1000, MGOS_TIMER_REPEAT, mostrar_tiempo, NULL);
+//    mgos_set_timer(1000, MGOS_TIMER_REPEAT, mostrar_tiempo, NULL);
 
     mgos_gpio_set_button_handler(PIN_BOTON, MGOS_GPIO_PULL_UP,
                                   MGOS_GPIO_INT_EDGE_NEG,
@@ -538,6 +555,7 @@ enum mgos_app_init_result mgos_app_init(void)
     mgos_mqtt_sub(TOPICO_MARGEN_LUZ, ajustes_margen_luz, NULL);
     mgos_mqtt_sub(TOPICO_UMBRAL_TEMP, ajustes_umbral_temp, NULL);
     mgos_mqtt_sub(TOPICO_MARGEN_TEMP, ajustes_margen_temp, NULL);
+    mgos_cron_add("*/5 5-59 22-23 * * THU-SAT", ejemplo_cron, NULL);
 
 //    mgos_register_http_endpoint("/foo", foo_handler, NULL);
 //    mgos_register_http_endpoint("/test", test, NULL);

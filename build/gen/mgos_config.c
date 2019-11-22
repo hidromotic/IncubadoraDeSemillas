@@ -1,7 +1,7 @@
 /* clang-format off */
 /*
  * Generated file - do not edit.
- * Command: /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_113648616/deps/modules/mongoose-os/tools/mgos_gen_config.py --c_name=mgos_config --c_global_name=mgos_sys_config --dest_dir=/data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_113648616/build/gen/ /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_113648616/deps/modules/mongoose-os/src/mgos_debug_udp_config.yaml /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_113648616/build/gen/mos_conf_schema.yml
+ * Command: /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_796035648/deps/modules/mongoose-os/tools/mgos_gen_config.py --c_name=mgos_config --c_global_name=mgos_sys_config --dest_dir=/data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_796035648/build/gen/ /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_796035648/deps/modules/mongoose-os/src/mgos_debug_udp_config.yaml /data/fwbuild-volumes/2.15.0/apps/IncubadoraDeSemillas/esp8266/build_contexts/build_ctx_796035648/build/gen/mos_conf_schema.yml
  */
 
 #include "mgos_config.h"
@@ -10,8 +10,8 @@
 
 #include "mgos_config_util.h"
 
-const struct mgos_conf_entry mgos_config_schema_[205] = {
-  {.type = CONF_TYPE_OBJECT, .key = "", .offset = 0, .num_desc = 204},
+const struct mgos_conf_entry mgos_config_schema_[208] = {
+  {.type = CONF_TYPE_OBJECT, .key = "", .offset = 0, .num_desc = 207},
   {.type = CONF_TYPE_OBJECT, .key = "debug", .offset = offsetof(struct mgos_config, debug), .num_desc = 10},
   {.type = CONF_TYPE_STRING, .key = "udp_log_addr", .offset = offsetof(struct mgos_config, debug.udp_log_addr)},
   {.type = CONF_TYPE_INT, .key = "mbedtls_level", .offset = offsetof(struct mgos_config, debug.mbedtls_level)},
@@ -38,11 +38,20 @@ const struct mgos_conf_entry mgos_config_schema_[205] = {
   {.type = CONF_TYPE_STRING, .key = "tz_spec", .offset = offsetof(struct mgos_config, sys.tz_spec)},
   {.type = CONF_TYPE_INT, .key = "wdt_timeout", .offset = offsetof(struct mgos_config, sys.wdt_timeout)},
   {.type = CONF_TYPE_STRING, .key = "pref_ota_lib", .offset = offsetof(struct mgos_config, sys.pref_ota_lib)},
-  {.type = CONF_TYPE_OBJECT, .key = "device", .offset = offsetof(struct mgos_config, device), .num_desc = 3},
+  {.type = CONF_TYPE_OBJECT, .key = "device", .offset = offsetof(struct mgos_config, device), .num_desc = 6},
   {.type = CONF_TYPE_STRING, .key = "id", .offset = offsetof(struct mgos_config, device.id)},
   {.type = CONF_TYPE_STRING, .key = "license", .offset = offsetof(struct mgos_config, device.license)},
   {.type = CONF_TYPE_STRING, .key = "mac", .offset = offsetof(struct mgos_config, device.mac)},
+  {.type = CONF_TYPE_OBJECT, .key = "location", .offset = offsetof(struct mgos_config, device.location), .num_desc = 2},
+  {.type = CONF_TYPE_DOUBLE, .key = "lat", .offset = offsetof(struct mgos_config, device.location.lat)},
+  {.type = CONF_TYPE_DOUBLE, .key = "lon", .offset = offsetof(struct mgos_config, device.location.lon)},
   {.type = CONF_TYPE_STRING, .key = "conf_acl", .offset = offsetof(struct mgos_config, conf_acl)},
+  {.type = CONF_TYPE_OBJECT, .key = "sntp", .offset = offsetof(struct mgos_config, sntp), .num_desc = 5},
+  {.type = CONF_TYPE_BOOL, .key = "enable", .offset = offsetof(struct mgos_config, sntp.enable)},
+  {.type = CONF_TYPE_STRING, .key = "server", .offset = offsetof(struct mgos_config, sntp.server)},
+  {.type = CONF_TYPE_INT, .key = "retry_min", .offset = offsetof(struct mgos_config, sntp.retry_min)},
+  {.type = CONF_TYPE_INT, .key = "retry_max", .offset = offsetof(struct mgos_config, sntp.retry_max)},
+  {.type = CONF_TYPE_INT, .key = "update_interval", .offset = offsetof(struct mgos_config, sntp.update_interval)},
   {.type = CONF_TYPE_OBJECT, .key = "http", .offset = offsetof(struct mgos_config, http), .num_desc = 10},
   {.type = CONF_TYPE_BOOL, .key = "enable", .offset = offsetof(struct mgos_config, http.enable)},
   {.type = CONF_TYPE_STRING, .key = "listen_addr", .offset = offsetof(struct mgos_config, http.listen_addr)},
@@ -130,12 +139,6 @@ const struct mgos_conf_entry mgos_config_schema_[205] = {
   {.type = CONF_TYPE_STRING, .key = "ssl_cert", .offset = offsetof(struct mgos_config, rpc.ws.ssl_cert)},
   {.type = CONF_TYPE_STRING, .key = "ssl_key", .offset = offsetof(struct mgos_config, rpc.ws.ssl_key)},
   {.type = CONF_TYPE_STRING, .key = "ssl_ca_cert", .offset = offsetof(struct mgos_config, rpc.ws.ssl_ca_cert)},
-  {.type = CONF_TYPE_OBJECT, .key = "sntp", .offset = offsetof(struct mgos_config, sntp), .num_desc = 5},
-  {.type = CONF_TYPE_BOOL, .key = "enable", .offset = offsetof(struct mgos_config, sntp.enable)},
-  {.type = CONF_TYPE_STRING, .key = "server", .offset = offsetof(struct mgos_config, sntp.server)},
-  {.type = CONF_TYPE_INT, .key = "retry_min", .offset = offsetof(struct mgos_config, sntp.retry_min)},
-  {.type = CONF_TYPE_INT, .key = "retry_max", .offset = offsetof(struct mgos_config, sntp.retry_max)},
-  {.type = CONF_TYPE_INT, .key = "update_interval", .offset = offsetof(struct mgos_config, sntp.update_interval)},
   {.type = CONF_TYPE_OBJECT, .key = "wifi", .offset = offsetof(struct mgos_config, wifi), .num_desc = 60},
   {.type = CONF_TYPE_OBJECT, .key = "ap", .offset = offsetof(struct mgos_config, wifi.ap), .num_desc = 15},
   {.type = CONF_TYPE_BOOL, .key = "enable", .offset = offsetof(struct mgos_config, wifi.ap.enable)},
@@ -244,13 +247,20 @@ const struct mgos_config mgos_config_defaults = {
   .sys.atca.i2c_bus = 0,
   .sys.atca.i2c_addr = 96,
   .sys.atca.ecdh_slots_mask = 12,
-  .sys.tz_spec = NULL,
+  .sys.tz_spec = "AR3",
   .sys.wdt_timeout = 30,
   .sys.pref_ota_lib = NULL,
   .device.id = "esp8266_??????",
   .device.license = NULL,
   .device.mac = NULL,
+  .device.location.lat = 999.0,
+  .device.location.lon = 999.0,
   .conf_acl = "*",
+  .sntp.enable = 1,
+  .sntp.server = "time.google.com",
+  .sntp.retry_min = 1,
+  .sntp.retry_max = 30,
+  .sntp.update_interval = 7200,
   .http.enable = 1,
   .http.listen_addr = "80",
   .http.document_root = "/",
@@ -331,11 +341,6 @@ const struct mgos_config mgos_config_defaults = {
   .rpc.ws.ssl_cert = NULL,
   .rpc.ws.ssl_key = NULL,
   .rpc.ws.ssl_ca_cert = NULL,
-  .sntp.enable = 1,
-  .sntp.server = "time.google.com",
-  .sntp.retry_min = 1,
-  .sntp.retry_max = 30,
-  .sntp.update_interval = 7200,
   .wifi.ap.enable = 1,
   .wifi.ap.ssid = "Mongoose_??????",
   .wifi.ap.pass = "Mongoose",
@@ -691,6 +696,33 @@ void mgos_config_set_device_mac(struct mgos_config *cfg, const char * v) {
   mgos_conf_set_str(&cfg->device.mac, v);
 }
 
+/* device.location */
+#define MGOS_CONFIG_HAVE_DEVICE_LOCATION
+#define MGOS_SYS_CONFIG_HAVE_DEVICE_LOCATION
+const struct mgos_config_device_location * mgos_config_get_device_location(struct mgos_config *cfg) {
+  return &cfg->device.location;
+}
+
+/* device.location.lat */
+#define MGOS_CONFIG_HAVE_DEVICE_LOCATION_LAT
+#define MGOS_SYS_CONFIG_HAVE_DEVICE_LOCATION_LAT
+double mgos_config_get_device_location_lat(struct mgos_config *cfg) {
+  return cfg->device.location.lat;
+}
+void mgos_config_set_device_location_lat(struct mgos_config *cfg, double v) {
+  cfg->device.location.lat = v;
+}
+
+/* device.location.lon */
+#define MGOS_CONFIG_HAVE_DEVICE_LOCATION_LON
+#define MGOS_SYS_CONFIG_HAVE_DEVICE_LOCATION_LON
+double mgos_config_get_device_location_lon(struct mgos_config *cfg) {
+  return cfg->device.location.lon;
+}
+void mgos_config_set_device_location_lon(struct mgos_config *cfg, double v) {
+  cfg->device.location.lon = v;
+}
+
 /* conf_acl */
 #define MGOS_CONFIG_HAVE_CONF_ACL
 #define MGOS_SYS_CONFIG_HAVE_CONF_ACL
@@ -699,6 +731,63 @@ const char * mgos_config_get_conf_acl(struct mgos_config *cfg) {
 }
 void mgos_config_set_conf_acl(struct mgos_config *cfg, const char * v) {
   mgos_conf_set_str(&cfg->conf_acl, v);
+}
+
+/* sntp */
+#define MGOS_CONFIG_HAVE_SNTP
+#define MGOS_SYS_CONFIG_HAVE_SNTP
+const struct mgos_config_sntp * mgos_config_get_sntp(struct mgos_config *cfg) {
+  return &cfg->sntp;
+}
+
+/* sntp.enable */
+#define MGOS_CONFIG_HAVE_SNTP_ENABLE
+#define MGOS_SYS_CONFIG_HAVE_SNTP_ENABLE
+int mgos_config_get_sntp_enable(struct mgos_config *cfg) {
+  return cfg->sntp.enable;
+}
+void mgos_config_set_sntp_enable(struct mgos_config *cfg, int v) {
+  cfg->sntp.enable = v;
+}
+
+/* sntp.server */
+#define MGOS_CONFIG_HAVE_SNTP_SERVER
+#define MGOS_SYS_CONFIG_HAVE_SNTP_SERVER
+const char * mgos_config_get_sntp_server(struct mgos_config *cfg) {
+  return cfg->sntp.server;
+}
+void mgos_config_set_sntp_server(struct mgos_config *cfg, const char * v) {
+  mgos_conf_set_str(&cfg->sntp.server, v);
+}
+
+/* sntp.retry_min */
+#define MGOS_CONFIG_HAVE_SNTP_RETRY_MIN
+#define MGOS_SYS_CONFIG_HAVE_SNTP_RETRY_MIN
+int mgos_config_get_sntp_retry_min(struct mgos_config *cfg) {
+  return cfg->sntp.retry_min;
+}
+void mgos_config_set_sntp_retry_min(struct mgos_config *cfg, int v) {
+  cfg->sntp.retry_min = v;
+}
+
+/* sntp.retry_max */
+#define MGOS_CONFIG_HAVE_SNTP_RETRY_MAX
+#define MGOS_SYS_CONFIG_HAVE_SNTP_RETRY_MAX
+int mgos_config_get_sntp_retry_max(struct mgos_config *cfg) {
+  return cfg->sntp.retry_max;
+}
+void mgos_config_set_sntp_retry_max(struct mgos_config *cfg, int v) {
+  cfg->sntp.retry_max = v;
+}
+
+/* sntp.update_interval */
+#define MGOS_CONFIG_HAVE_SNTP_UPDATE_INTERVAL
+#define MGOS_SYS_CONFIG_HAVE_SNTP_UPDATE_INTERVAL
+int mgos_config_get_sntp_update_interval(struct mgos_config *cfg) {
+  return cfg->sntp.update_interval;
+}
+void mgos_config_set_sntp_update_interval(struct mgos_config *cfg, int v) {
+  cfg->sntp.update_interval = v;
 }
 
 /* http */
@@ -1548,63 +1637,6 @@ const char * mgos_config_get_rpc_ws_ssl_ca_cert(struct mgos_config *cfg) {
 }
 void mgos_config_set_rpc_ws_ssl_ca_cert(struct mgos_config *cfg, const char * v) {
   mgos_conf_set_str(&cfg->rpc.ws.ssl_ca_cert, v);
-}
-
-/* sntp */
-#define MGOS_CONFIG_HAVE_SNTP
-#define MGOS_SYS_CONFIG_HAVE_SNTP
-const struct mgos_config_sntp * mgos_config_get_sntp(struct mgos_config *cfg) {
-  return &cfg->sntp;
-}
-
-/* sntp.enable */
-#define MGOS_CONFIG_HAVE_SNTP_ENABLE
-#define MGOS_SYS_CONFIG_HAVE_SNTP_ENABLE
-int mgos_config_get_sntp_enable(struct mgos_config *cfg) {
-  return cfg->sntp.enable;
-}
-void mgos_config_set_sntp_enable(struct mgos_config *cfg, int v) {
-  cfg->sntp.enable = v;
-}
-
-/* sntp.server */
-#define MGOS_CONFIG_HAVE_SNTP_SERVER
-#define MGOS_SYS_CONFIG_HAVE_SNTP_SERVER
-const char * mgos_config_get_sntp_server(struct mgos_config *cfg) {
-  return cfg->sntp.server;
-}
-void mgos_config_set_sntp_server(struct mgos_config *cfg, const char * v) {
-  mgos_conf_set_str(&cfg->sntp.server, v);
-}
-
-/* sntp.retry_min */
-#define MGOS_CONFIG_HAVE_SNTP_RETRY_MIN
-#define MGOS_SYS_CONFIG_HAVE_SNTP_RETRY_MIN
-int mgos_config_get_sntp_retry_min(struct mgos_config *cfg) {
-  return cfg->sntp.retry_min;
-}
-void mgos_config_set_sntp_retry_min(struct mgos_config *cfg, int v) {
-  cfg->sntp.retry_min = v;
-}
-
-/* sntp.retry_max */
-#define MGOS_CONFIG_HAVE_SNTP_RETRY_MAX
-#define MGOS_SYS_CONFIG_HAVE_SNTP_RETRY_MAX
-int mgos_config_get_sntp_retry_max(struct mgos_config *cfg) {
-  return cfg->sntp.retry_max;
-}
-void mgos_config_set_sntp_retry_max(struct mgos_config *cfg, int v) {
-  cfg->sntp.retry_max = v;
-}
-
-/* sntp.update_interval */
-#define MGOS_CONFIG_HAVE_SNTP_UPDATE_INTERVAL
-#define MGOS_SYS_CONFIG_HAVE_SNTP_UPDATE_INTERVAL
-int mgos_config_get_sntp_update_interval(struct mgos_config *cfg) {
-  return cfg->sntp.update_interval;
-}
-void mgos_config_set_sntp_update_interval(struct mgos_config *cfg, int v) {
-  cfg->sntp.update_interval = v;
 }
 
 /* wifi */

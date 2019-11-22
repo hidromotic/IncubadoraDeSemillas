@@ -17,6 +17,9 @@ extern bool mgos_core_init(void);
 extern bool mgos_adc_init(void);
 extern bool mgos_i2c_init(void);
 extern bool mgos_atca_init(void);
+extern bool mgos_location_init(void);
+extern bool mgos_sntp_init(void);
+extern bool mgos_cron_init(void);
 extern bool mgos_dht_init(void);
 extern bool mgos_wifi_init(void);
 extern bool mgos_http_server_init(void);
@@ -32,7 +35,6 @@ extern bool mgos_rpc_service_gpio_init(void);
 extern bool mgos_rpc_service_ota_init(void);
 extern bool mgos_rpc_uart_init(void);
 extern bool mgos_rpc_ws_init(void);
-extern bool mgos_sntp_init(void);
 
 static const struct lib_descr {
   const char *title;
@@ -65,6 +67,15 @@ static const struct lib_descr {
 
     // "atca". deps: [ "i2c" ]
     {.title = "atca", .init = mgos_atca_init},
+
+    // "location". deps: [ "core" ]
+    {.title = "location", .init = mgos_location_init},
+
+    // "sntp". deps: [ "core" ]
+    {.title = "sntp", .init = mgos_sntp_init},
+
+    // "cron". deps: [ "core" "location" "sntp" ]
+    {.title = "cron", .init = mgos_cron_init},
 
     // "dht". deps: [ "core" ]
     {.title = "dht", .init = mgos_dht_init},
@@ -110,9 +121,6 @@ static const struct lib_descr {
 
     // "rpc-ws". deps: [ "core" "http-server" "rpc-common" ]
     {.title = "rpc-ws", .init = mgos_rpc_ws_init},
-
-    // "sntp". deps: [ "core" ]
-    {.title = "sntp", .init = mgos_sntp_init},
 
 };
 
